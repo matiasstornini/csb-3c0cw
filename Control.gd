@@ -24,132 +24,148 @@ const AVATAR_MOTION_MAP = {
 	}
 }
 
-# --- Motion JSON específica para Avatar 2 ---
-const AVATAR2_TALK_MOTION = {
-    "Version": 3,
-    "Meta": {
-        "Duration": 1.2,
-        "Fps": 30.0,
-        "Loop": true,
-        "AreBeziersRestricted": true,
-        "CurveCount": 4,
-        "TotalSegmentCount": 22,
-        "TotalPointCount": 78,
-        "UserDataCount": 0,
-        "TotalUserDataSize": 0
-    },
-    "Curves": [
-        {
-            "Target": "Parameter",
-            "Id": "ParamMouthOpenY",
-            "Segments": [
-                0,
-                0,
-                1,
-                0.044,
-                0,
-                0.089,
-                0.7,
-                0.133,
-                0.7,
-                1,
-                0.178,
-                0.7,
-                0.222,
-                0.3,
-                0.267,
-                0.3,
-                1,
-                0.311,
-                0.3,
-                0.356,
-                1,
-                0.4,
-                1,
-                1,
-                0.5,
-                1,
-                0.6,
-                0.1,
-                0.7,
-                0.1,
-                1,
-                0.789,
-                0.1,
-                0.878,
-                0.85,
-                0.967,
-                0.85,
-                1,
-                1.044,
-                0.85,
-                1.122,
-                0,
-                1.2,
-                0
-            ]
-        },
-        {
-            "Target": "Parameter",
-            "Id": "ParamMouthForm",
-            "Segments": [
-                0,
-                0,
-                1,
-                0.1,
-                0,
-                0.2,
-                0.5,
-                0.3,
-                0.5,
-                1,
-                0.433,
-                0.5,
-                0.567,
-                -0.4,
-                0.7,
-                -0.4,
-                1,
-                0.867,
-                -0.4,
-                1.033,
-                0.2,
-                1.2,
-                0.2
-            ]
-        },
-        {
-            "Target": "Parameter",
-            "Id": "ParamBodyAngleZ",
-            "Segments": [
-                0,
-                0,
-                1,
-                0.4,
-                0,
-                0.8,
-                1.5,
-                1.2,
-                1.5
-            ]
-        },
-        {
-            "Target": "Parameter",
-            "Id": "ParamBreath",
-            "Segments": [
-                0,
-                0,
-                1,
-                0.5,
-                0,
-                1,
-                1,
-                1.2,
-                1
-            ]
-        }
-    ]
-}
+# --- Funciones hardcodeadas para Avatar 2 basadas en el JSON ---
+func calculate_avatar2_mouth_open_curve(progress: float) -> float:
+	"""Calcular el valor de apertura de boca basado en la curva de la motion del Avatar 2"""
+	# Esta función replica la curva de ParamMouthOpenY del JSON
+	# Los valores están basados en los segmentos de la motion
+	
+	if progress <= 0.0:
+		return 0.0  # Boca cerrada
+	elif progress <= 0.044:
+		# Transición suave de cerrada a abierta
+		var t = progress / 0.044
+		return lerp(0.0, 0.089, ease_in_out_cubic(t))
+	elif progress <= 0.089:
+		return 0.089
+	elif progress <= 0.133:
+		# Transición a 0.7
+		var t = (progress - 0.089) / (0.133 - 0.089)
+		return lerp(0.089, 0.7, ease_in_out_cubic(t))
+	elif progress <= 0.178:
+		return 0.7
+	elif progress <= 0.222:
+		# Transición a 0.3
+		var t = (progress - 0.178) / (0.222 - 0.178)
+		return lerp(0.7, 0.3, ease_in_out_cubic(t))
+	elif progress <= 0.267:
+		return 0.3
+	elif progress <= 0.311:
+		# Mantiene 0.3
+		return 0.3
+	elif progress <= 0.356:
+		# Transición a 1.0
+		var t = (progress - 0.311) / (0.356 - 0.311)
+		return lerp(0.3, 1.0, ease_in_out_cubic(t))
+	elif progress <= 0.4:
+		return 1.0
+	elif progress <= 0.5:
+		# Mantiene 1.0
+		return 1.0
+	elif progress <= 0.6:
+		# Transición a 0.1
+		var t = (progress - 0.5) / (0.6 - 0.5)
+		return lerp(1.0, 0.1, ease_in_out_cubic(t))
+	elif progress <= 0.7:
+		return 0.1
+	elif progress <= 0.789:
+		# Mantiene 0.1
+		return 0.1
+	elif progress <= 0.878:
+		# Transición a 0.85
+		var t = (progress - 0.789) / (0.878 - 0.789)
+		return lerp(0.1, 0.85, ease_in_out_cubic(t))
+	elif progress <= 0.967:
+		return 0.85
+	elif progress <= 1.044:
+		# Mantiene 0.85
+		return 0.85
+	elif progress <= 1.122:
+		# Transición a 0.0
+		var t = (progress - 1.044) / (1.122 - 1.044)
+		return lerp(0.85, 0.0, ease_in_out_cubic(t))
+	else:
+		return 0.0  # Boca cerrada
+
+func calculate_avatar2_mouth_form_curve(progress: float) -> float:
+	"""Calcular el valor de forma de boca basado en la curva de la motion del Avatar 2"""
+	# Esta función replica la curva de ParamMouthForm del JSON
+	
+	if progress <= 0.0:
+		return 0.0
+	elif progress <= 0.1:
+		# Transición suave
+		var t = progress / 0.1
+		return lerp(0.0, 0.0, ease_in_out_cubic(t))
+	elif progress <= 0.2:
+		# Transición a 0.5
+		var t = (progress - 0.1) / (0.2 - 0.1)
+		return lerp(0.0, 0.5, ease_in_out_cubic(t))
+	elif progress <= 0.3:
+		return 0.5
+	elif progress <= 0.433:
+		# Mantiene 0.5
+		return 0.5
+	elif progress <= 0.567:
+		# Transición a -0.4
+		var t = (progress - 0.433) / (0.567 - 0.433)
+		return lerp(0.5, -0.4, ease_in_out_cubic(t))
+	elif progress <= 0.7:
+		return -0.4
+	elif progress <= 0.867:
+		# Mantiene -0.4
+		return -0.4
+	elif progress <= 1.033:
+		# Transición a 0.2
+		var t = (progress - 0.867) / (1.033 - 0.867)
+		return lerp(-0.4, 0.2, ease_in_out_cubic(t))
+	elif progress <= 1.2:
+		return 0.2
+	else:
+		return 0.2
+
+func calculate_avatar2_body_angle_curve(progress: float) -> float:
+	"""Calcular el valor del ángulo del cuerpo basado en la curva de la motion del Avatar 2"""
+	# Esta función replica la curva de ParamBodyAngleZ del JSON
+	
+	if progress <= 0.0:
+		return 0.0
+	elif progress <= 0.4:
+		# Transición suave
+		var t = progress / 0.4
+		return lerp(0.0, 0.0, ease_in_out_cubic(t))
+	elif progress <= 0.8:
+		# Transición a 1.5
+		var t = (progress - 0.4) / (0.8 - 0.4)
+		return lerp(0.0, 1.5, ease_in_out_cubic(t))
+	elif progress <= 1.2:
+		return 1.5
+	else:
+		return 1.5
+
+func calculate_avatar2_breath_curve(progress: float) -> float:
+	"""Calcular el valor de respiración basado en la curva de la motion del Avatar 2"""
+	# Esta función replica la curva de ParamBreath del JSON
+	
+	if progress <= 0.0:
+		return 0.0
+	elif progress <= 0.5:
+		# Transición suave
+		var t = progress / 0.5
+		return lerp(0.0, 0.0, ease_in_out_cubic(t))
+	elif progress <= 1.0:
+		# Transición a 1.0
+		var t = (progress - 0.5) / (1.0 - 0.5)
+		return lerp(0.0, 1.0, ease_in_out_cubic(t))
+	elif progress <= 1.2:
+		return 1.0
+	else:
+		return 1.0
+
+# Función de utilidad para easing
+func ease_in_out_cubic(t: float) -> float:
+	"""Función de easing cúbico suave"""
+	return t * t * (3.0 - 2.0 * t)
 
 func _ready() -> void:
 	# Crear el AI según el avatar seleccionado
@@ -234,18 +250,52 @@ func play_avatar_motion(motion_name: String) -> void:
 	var motion_data = avatar_motions[motion_name]
 	avatar_node.start_motion(motion_data.group, motion_data.index, 3)
 
-# Función específica para reproducir la motion JSON del Avatar 2
+# Función específica para reproducir la motion hardcodeada del Avatar 2
 func play_avatar2_talk_motion(avatar_node) -> void:
-	if not avatar_node.has_method("start_motion_from_json"):
-		print("⚠️ El nodo del avatar no tiene el método start_motion_from_json")
-		# Fallback al método original si no existe el método JSON
-		avatar_node.start_motion("talk", 0, 3)
-		return
+	# Crear un timer para animar la motion
+	var animation_timer = Timer.new()
+	animation_timer.wait_time = 0.04  # 30 FPS (1/30 ≈ 0.033)
+	animation_timer.one_shot = false
+	add_child(animation_timer)
 	
-	# Convertir la motion JSON a string y reproducirla
-	var motion_json_string = JSON.stringify(AVATAR2_TALK_MOTION)
-	avatar_node.start_motion_from_json(motion_json_string)
-	print("✅ Reproduciendo motion JSON personalizada para Avatar 2")
+	var current_time = 0.0
+	var total_duration = 1.2  # Duración total de la motion
+	
+	# Función que se ejecuta en cada frame de la animación
+	animation_timer.timeout.connect(func():
+		var progress = current_time / total_duration
+		
+		# Calcular valores de cada parámetro
+		var mouth_open = calculate_avatar2_mouth_open_curve(progress)
+		var mouth_form = calculate_avatar2_mouth_form_curve(progress)
+		var body_angle = calculate_avatar2_body_angle_curve(progress)
+		var breath = calculate_avatar2_breath_curve(progress)
+		
+		# Aplicar los valores al avatar
+		if avatar_node.has_method("set_parameter_value"):
+			avatar_node.set_parameter_value("ParamMouthOpenY", mouth_open)
+			avatar_node.set_parameter_value("ParamMouthForm", mouth_form)
+			avatar_node.set_parameter_value("ParamBodyAngleZ", body_angle)
+			avatar_node.set_parameter_value("ParamBreath", breath)
+		else:
+			# Fallback si no existe el método set_parameter_value
+			print("⚠️ El nodo del avatar no tiene el método set_parameter_value")
+			avatar_node.start_motion("talk", 0, 3)
+			animation_timer.queue_free()
+			return
+		
+		current_time += animation_timer.wait_time
+		
+		# Detener la animación cuando termine
+		if current_time >= total_duration:
+			animation_timer.stop()
+			animation_timer.queue_free()
+			print("✅ Motion hardcodeada completada para Avatar 2")
+	)
+	
+	# Iniciar la animación
+	animation_timer.start()
+	print("✅ Reproduciendo motion hardcodeada personalizada para Avatar 2")
 
 # Función para obtener el nodo del avatar dinámicamente
 func get_avatar_node():
